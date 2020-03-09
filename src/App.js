@@ -1,18 +1,17 @@
 import React from 'react';
-import logo from './logo.svg';
-import { Navbar, NavbarBrand } from "reactstrap"
+import Main from './components/MainComponent'
 import './App.css';
-import { DISHES } from './shared/dishes'
-
-import Menu from './components/MenuComponent';
+import { BrowserRouter } from 'react-router-dom';
 
 export class App extends React.Component {
 
   render() {
     return (
+      <BrowserRouter>
       <div className="App">
         <Main />
       </div>
+    </BrowserRouter>
     );
   }
 }
