@@ -3,6 +3,7 @@ import {
     Card, CardImg, CardText, CardBody,
     CardTitle, Breadcrumb, BreadcrumbItem, Button, Row, Col, Label, Modal, ModalHeader, ModalBody, ModalFooter
 } from 'reactstrap';
+import { Loading } from './LoadingComponent';
 import { Link } from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 
@@ -14,15 +15,14 @@ class Form extends Component {
 
     constructor(props) {
         super(props);
-        
+
         this.handleSubmit = this.handleSubmit.bind(this);
 
     }
 
     handleSubmit(values) {
-        console.log('Current State is: ' + JSON.stringify(values));
-        alert('Current State is: ' + JSON.stringify(values));
-        // event.preventDefault();
+        this.props.toggleModal();
+        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
     }
 
 
@@ -95,8 +95,26 @@ class Form extends Component {
 }
 
 
-function RenderDish({ dish }) {
-    if (dish != null)
+function RenderDish({ dish, isLoading, errMess }) {
+    if (isLoading) {
+        return (
+            <div className="container">
+                <div className="row">
+                    <Loading />
+                </div>
+            </div>
+        );
+    }
+    else if (errMess) {
+        return (
+            <div className="container">
+                <div className="row">
+                    <h4>{errMess}</h4>
+                </div>
+            </div>
+        );
+    }
+    else if (dish != null) {
         return (
             <Card>
                 <CardImg top src={dish.image} alt={dish.name} />
@@ -106,13 +124,14 @@ function RenderDish({ dish }) {
                 </CardBody>
             </Card>
         );
-    else
+    } else {
         return (
             <div></div>
         );
+    }
 }
 
-function RenderComments({ comments, toggleModal, toggle }) {
+function RenderComments({ comments, toggleModal, toggle, addComment, dishId }) {
     if (comments) {
         return (
             <div>
@@ -139,7 +158,7 @@ function RenderComments({ comments, toggleModal, toggle }) {
                 <Modal isOpen={toggle} toggle={toggleModal}>
                     <ModalHeader toggle={toggleModal}>Submit Comment</ModalHeader>
                     <ModalBody>
-                        <Form />
+                        <Form dishId={dishId} addComment={addComment} toggleModal={toggleModal} />
                     </ModalBody>
                 </Modal>
             </div>
@@ -186,14 +205,16 @@ class DishDetail extends Component {
                 </div>
                 <div className="row">
                     <div className="col-12 col-md-5 m-1">
-                        <RenderDish dish={this.props.dish} />
+                        <RenderDish dish={this.props.dish}  />
                     </div>
                     <div className="col-12 col-md-5 m-1">
-                        <RenderComments 
-                        toggle={toggle} 
-                        toggleModal={this.toggleModal} 
-                        comments={this.props.comments}
-                         />
+                        <RenderComments
+                            toggle={toggle}
+                            toggleModal={this.toggleModal}
+                            comments={this.props.comments}
+                            addComment={this.props.addComment}
+                            dishId={this.props.dish.id}
+                        />
                     </div>
                 </div>
 
