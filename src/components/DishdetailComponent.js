@@ -23,7 +23,7 @@ class Form extends Component {
 
     handleSubmit(values) {
         this.props.toggleModal();
-        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
+        this.props.postComment(this.props.dishId, values.rating, values.author, values.comment);
     }
 
 
@@ -114,7 +114,7 @@ function RenderDish({ dish, }) {
     }
 }
 
-function RenderComments({ comments, toggleModal, toggle, addComment, dishId }) {
+function RenderComments({ comments, toggleModal, toggle, postComment, dishId }) {
     if (comments) {
         return (
             <div>
@@ -141,7 +141,7 @@ function RenderComments({ comments, toggleModal, toggle, addComment, dishId }) {
                 <Modal isOpen={toggle} toggle={toggleModal}>
                     <ModalHeader toggle={toggleModal}>Submit Comment</ModalHeader>
                     <ModalBody>
-                        <Form dishId={dishId} addComment={addComment} toggleModal={toggleModal} />
+                        <Form dishId={dishId} postComment={postComment} toggleModal={toggleModal} />
                     </ModalBody>
                 </Modal>
             </div>
@@ -214,7 +214,7 @@ class DishDetail extends Component {
                                 toggle={toggle}
                                 toggleModal={this.toggleModal}
                                 comments={this.props.comments}
-                                addComment={this.props.addComment}
+                                postComment={this.props.postComment}
                                 dishId={this.props.dish.id}
                             />
                         </div>
