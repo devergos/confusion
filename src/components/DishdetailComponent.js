@@ -7,6 +7,7 @@ import { Loading } from './LoadingComponent';
 import { Link } from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { baseUrl } from '../shared/baseUrl';
+import { FadeTransform, Fade, Stagger } from 'react-animation-components';
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
@@ -99,13 +100,19 @@ class Form extends Component {
 function RenderDish({ dish, }) {
     if (dish != null) {
         return (
-            <Card>
-                <CardImg top src={baseUrl + dish.image} alt={dish.name} />
-                <CardBody>
-                    <CardTitle>{dish.name}</CardTitle>
-                    <CardText>{dish.description}</CardText>
-                </CardBody>
-            </Card>
+            <FadeTransform
+                in
+                transformProps={{
+                    exitTransform: 'scale(0.5) translateY(-50%)'
+                }}>
+                <Card>
+                    <CardImg top src={baseUrl + dish.image} alt={dish.name} />
+                    <CardBody>
+                        <CardTitle>{dish.name}</CardTitle>
+                        <CardText>{dish.description}</CardText>
+                    </CardBody>
+                </Card>
+            </FadeTransform>
         );
     } else {
         return (
@@ -120,20 +127,23 @@ function RenderComments({ comments, toggleModal, toggle, postComment, dishId }) 
             <div>
                 <h4>Comments</h4>
                 <ul className={"list-unstyled comments-list"}>
+                    <Stagger in>
+                        {comments.map(({ author, date, comment, id }) => {
 
-                    {comments.map(({ author, date, comment, id }) => {
-
-                        return (
-                            <li className={"comment"} key={id}>
-                                <p className={"mt-1"}>{comment}</p>
-                                <div className={"mt-1"}>
-                                    <span>-- {author}</span>
-                                    <span>, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(date)))}</span>
-                                </div>
-                            </li>
-                        )
-                    }
-                    )}
+                            return (
+                                <Fade in>
+                                    <li className={"comment"} key={id}>
+                                        <p className={"mt-1"}>{comment}</p>
+                                        <div className={"mt-1"}>
+                                            <span>-- {author}</span>
+                                            <span>, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(date)))}</span>
+                                        </div>
+                                    </li>
+                                </Fade>
+                            )
+                        }
+                        )}
+                    </Stagger>
 
                 </ul>
                 <Button onClick={toggleModal} color="secondary"><span className={"fa fa-edit"}> Submit Comment</span></Button>
